@@ -8,14 +8,18 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  password String
-  name     String @unique
+  id          String @id @default(uuid())
+  email       String @unique
+  password    String
+  name        String @unique
+  description String
+  imgurl      String
 }
 
 model Post {
   id      String @id @default(uuid())
+  title   String
   message String
   name    String
+  uid     Int    @unique @default(autoincrement())
 }

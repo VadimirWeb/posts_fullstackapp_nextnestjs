@@ -10,6 +10,11 @@ export class UsersController {
         return this.usersService.createUser(body.email, body.password, body.name);
    }
 
+   @Post('/updateAvatar')
+   async updateAvatar(@Body() body: {urlAvatar: string, name: string}){
+      return this.usersService.updateAvatar(body.urlAvatar, body.name)
+   }
+
   @Get()
   async getAllUsers(){
     return this.usersService.getUsers()
@@ -19,6 +24,7 @@ export class UsersController {
   async getByEmail(@Query("email")email: string){
     return this.usersService.getByEmail(email)
   }
+  
 
   @Delete()
     async deleteUser(@Body() body: { id: string;}) {

@@ -4,39 +4,23 @@ import { useState } from "react";
 import Header from "../ui/HeaderUI";
 import { useRouter } from "next/navigation"; 
 import { ButtonComp } from "../components/ButtonComp";
+import { getUserByEmail } from "@/lib/api/users";
+import { authLogin } from "@/lib/api/auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fetchName, setFetchName] = useState("");
-  const router = useRouter();
+  const router = useRouter(); 
 
   async function onLoginSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     try {
-      const res1 = await fetch(`http://localhost:3001/users/byEmail?email=${email}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" }
-      });
+      const userByEmail = await getUserByEmail(email)
 
-      if (!res1.ok) throw new Error("Ошибка загрузки пользователя");
-      const data = await res1.json();
-      setFetchName(data.name); 
-
-      console.log("Имя пользователя:", data.name);
-
-      const res2 = await fetch("http://localhost:3001/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name: data.name })
-      });
-
-      if (!res2.ok) throw new Error("Ошибка входа");
-      const { token } = await res2.json();
+      const { token } = await authLogin(email, password, userByEmail.name)
       
       localStorage.setItem("token", token);
-      console.log("Login successful");
 
       router.push("/profile");
     } catch (error) {

@@ -1,19 +1,17 @@
 "use client"
-import Image from "next/image";
+
 import { ButtonComp } from "../components/ButtonComp";
 import { LinksComp } from "../components/LinkComp";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
+
 
 export default function Header() {
-  const [authSession, setauthSession] = useState(false)
+  const [authSession, setAuthSession] = useState(false)
 
-  useEffect(()=>{
-    const token = localStorage.getItem("token")
-
-    if (token) {
-      setauthSession(true)
-    }
+    useLayoutEffect(()=>{
+      localStorage.getItem("token") ? setAuthSession(true) : setAuthSession(false)
   },[])
+
 
   return (
       <header className="container mx-auto flex bg-blue-100 justify-between py-3 px-3">
@@ -29,8 +27,11 @@ export default function Header() {
           
           : ""}
         </div>
-        {authSession ? 
-          <ButtonComp title="Sign out" /> : 
+        {authSession ?
+          <div>
+            <ButtonComp title="Sign out" />
+          </div> 
+          : 
           <div className="flex gap-5">
             <ButtonComp title="Login" />
             <ButtonComp title="Register" />

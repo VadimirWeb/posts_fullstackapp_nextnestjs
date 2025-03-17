@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react"
 import Header from "../ui/HeaderUI";
 import { ButtonComp } from "../components/ButtonComp";
+import { registrationUser } from "@/lib/api/users";
+import { authLogin } from "@/lib/api/auth";
 
 export default function Registration(){
     const [email, setEmail] = useState("");
@@ -14,27 +16,13 @@ export default function Registration(){
     async function onRegisterUser(e: React.FormEvent){
         e.preventDefault();
 
-        await fetch("http://localhost:3001/users",{
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ "email": email, "name": name, "password": password })
-        })
+        await registrationUser(email, password, name).catch(console.error)
 
-        const loginNewUser = await fetch("http://localhost:3001/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ "email": email, "name": name, "password": password })
-          });
-
-          if (loginNewUser.ok) {
-            const { token } = await loginNewUser.json();
-            localStorage.setItem("token", token);
-            router.push("/profile"); 
-          } else {
-            console.error("Ошибка входа");
-          }
-
-
+        const { token } = await authLogin(email, password, name).catch(console.error)
+        
+        localStorage.setItem("token", token);
+        
+        router.push("/profile"); 
     }
 
     return (
@@ -46,7 +34,7 @@ export default function Registration(){
                     <input className="bg-blue-50/80 w-60 h-10 px-2 text-blue-800 focus:border-1 focus:bg-blue-50 outline-0" type="email" placeholder="Enter Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                     <input className="bg-blue-50/80 w-60 h-10 px-2 text-blue-800 focus:border-1 focus:bg-blue-50 outline-0" type="text" placeholder="Enter name" value={name} onChange={e => setName(e.target.value)}/>
                     <input className="bg-blue-50/80 w-60 h-10 px-2 text-blue-800 focus:border-1 focus:bg-blue-50 outline-0" type="password" placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                    <ButtonComp title="Login"/>
+                    <ButtonComp title="Registration"/>
                 </form>
             </div>
         </>

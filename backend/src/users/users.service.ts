@@ -8,7 +8,7 @@ export class UsersService {
 
     async createUser(email: string, password: string, name: string): Promise<User>{
         return this.prisma.user.create({
-            data: {email, password, name}
+            data: {email, password, name, description: "", imgurl: ""}
         })
     }
 
@@ -29,6 +29,17 @@ export class UsersService {
     async getByEmail(email: string): Promise<User | null>{
         return this.prisma.user.findUnique({
             where: {email},
+        })
+    }
+
+    async updateAvatar(urlAvatar: string, name: string): Promise<User | null>{
+        return this.prisma.user.update({
+            where: {
+                name
+            },
+            data: {
+                imgurl: urlAvatar
+            }
         })
     }
 
