@@ -15,6 +15,13 @@ export async function registrationUser(email: string, password: string, name: st
     })
 }
 
+export async function getPostsByUser(email: string) {
+    return apiFetch('/users/getPostsByUser', {
+        method: "POST",
+        body: JSON.stringify({ "email": email})
+    })
+}
+
 export async function updateAvatar(urlAvatar:string,  name: string) {
     return apiFetch('/users/updateAvatar', {
         method: "POST",

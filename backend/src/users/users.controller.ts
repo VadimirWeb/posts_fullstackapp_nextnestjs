@@ -15,6 +15,12 @@ export class UsersController {
       return this.usersService.updateAvatar(body.urlAvatar, body.name)
    }
 
+
+   @Post('/getPostsByUser')
+   async getPostsByUser(@Body() body: {email: string}){
+      return this.usersService.getPostsByUser(body.email)
+   }
+
   @Get()
   async getAllUsers(){
     return this.usersService.getUsers()

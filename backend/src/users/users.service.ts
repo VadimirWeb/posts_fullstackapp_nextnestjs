@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { Post, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -23,7 +23,22 @@ export class UsersService {
     }
 
     async getUsers(): Promise<User[]> {
-        return this.prisma.user.findMany()
+        return await this.prisma.user.findMany({
+
+        });
+    }
+
+    async getPostsByUser(email: string): Promise<Post[]>{
+        const user = await this.prisma.user.findUnique({
+            where: { email: email },
+            include: { posts: true }, // 👈 Загружаем все посты пользователя
+        });
+
+        if (!user) {
+            throw new Error('User not found'); // Или `return null`
+        }
+
+        return user.posts
     }
 
     async getByEmail(email: string): Promise<User | null>{

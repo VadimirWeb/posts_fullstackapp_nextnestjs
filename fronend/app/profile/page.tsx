@@ -5,7 +5,7 @@ import Header from "../ui/HeaderUI";
 import Image from "next/image";
 import { uploadAvatar } from "@/lib/api/uploads";
 import { authProfile } from "@/lib/api/auth";
-import { getUserByEmail, updateAvatar } from "@/lib/api/users";
+import { getPostsByUser, getUserByEmail, updateAvatar } from "@/lib/api/users";
 
 export default function Profile() {
   const [user, setUser] = useState({
@@ -15,10 +15,14 @@ export default function Profile() {
     description: ""
   });
   const [file, setFile] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState("https://avatars.githubusercontent.com/u/97165289");
+  const [posts, setPosts] = useState([])
 
   useEffect(() => {
-      authProfile().then(authUser => getUserByEmail(authUser.email).then(setUser).catch(console.error)).catch(console.error)
+        authProfile().then(authUser => {
+          getUserByEmail(authUser.email).then(setUser).catch(console.error)
+          getPostsByUser(authUser.email).then(setPosts).catch(console.error)
+        }).catch(console.error)
       
   }, []);
 
@@ -60,6 +64,16 @@ export default function Profile() {
           <p className="text-2xl mt-4">Добро пожаловать, <span className="font-bold text-2xl">{user["name"]}</span>!</p>  
           <p>Твоя почта: <span className="font-bold">{user["email"]}</span></p>
           <p>Твое описание: <span className="font-extralight">{user["description"]}</span></p>
+          <br />
+          <p>Твои посты: </p>
+          <ul className="flex flex-col items-start gap-2 mx-4 my-2">
+            {posts.map((post) => 
+              <li key={post["uid"]} className="px-4 py-2 border-1 text-start">
+                <h3 className="font-medium text-2xl">{post["title"]}</h3>
+                <span className="">{post["message"]}</span>
+              </li>
+          )}
+          </ul>
       </div>
       <ul>
       </ul>

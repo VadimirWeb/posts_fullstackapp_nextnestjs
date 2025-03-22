@@ -14,12 +14,15 @@ model User {
   name        String @unique
   description String
   imgurl      String
+  posts       Post[]
 }
 
 model Post {
-  id      String @id @default(uuid())
-  title   String
-  message String
-  name    String
-  uid     Int    @unique @default(autoincrement())
+  id       String @id @default(uuid())
+  title    String
+  message  String
+  name     String
+  uid      Int    @unique @default(autoincrement())
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
 }

@@ -11,7 +11,7 @@ import { setPost } from "@/lib/api/posts";
 export default function createPost(){
     const [message, setMessage] = useState('')
     const [title, setTitle] = useState('')
-    const [user, setUser] = useState({})
+    const [user, setUser] = useState({name: "", })
 
     useEffect(()=>{
         authProfile().then(setUser).catch(console.error)
